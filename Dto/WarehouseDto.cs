@@ -2,8 +2,8 @@
 
 namespace WebApplication2.Dto;
 
-// Przykładowa klasa DTO dla zapytania
-public class RegisterProductInWarehouseRequestDTO
+
+public class RegisterProductInWarehouseRequestDto
 {
     public int? IdProduct { get; set; }
     public int? IdWarehouse { get; set; }

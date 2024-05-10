@@ -9,21 +9,21 @@ namespace WebApplication2.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class WarehouseController : ControllerBase
+    public class WarehouseController2 : ControllerBase
     {
         private readonly IWarehouseService _warehouseService;
 
-        public WarehouseController(IWarehouseService warehouseService)
+        public WarehouseController2(IWarehouseService warehouseService)
         {
             _warehouseService = warehouseService;
         }
 
         [HttpPost]
-        public async Task<IActionResult> RegisterProduct([FromBody] RegisterProductRequestDTO dto)
+        public async Task<IActionResult> RegisterProductUsingProcedure([FromBody] RegisterProductRequestDTO dto)
         {
             try
             {
-                var idProductWarehouse = await _warehouseService.RegisterProductInWarehouseAsync(dto);
+                var idProductWarehouse = await _warehouseService.RegisterProductUsingProcedureAsync(dto);
                 return Ok(new { IdProductWarehouse = idProductWarehouse });
             }
             catch (NotFoundException ex)

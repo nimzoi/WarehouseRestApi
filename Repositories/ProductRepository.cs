@@ -1,31 +1,30 @@
 ﻿using System.Data.SqlClient;
-
-namespace WebApplication2.Repositories;
-
-public interface IProductRepository
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+namespace WebApplication2.Repositories
 {
-    Task<bool> ProductExists(int productId);
-}
-
-public class ProductRepository : IProductRepository
-{
-    private readonly IConfiguration _configuration;
-
-    public ProductRepository(IConfiguration configuration)
+    public interface IProductRepository
     {
-        _configuration = configuration;
+        Task<bool> ProductExists(int productId);
     }
 
-    public async Task<bool> ProductExists(int productId)
-    {
-        await using var connection = new SqlConnection(_configuration["ConnectionStrings:DefaultConnection"]);
-        await connection.OpenAsync();
+    
+        public class ProductRepository : IProductRepository
+        {
+            private readonly IConfiguration _configuration;
+            public ProductRepository(IConfiguration configuration)
+            {
+                _configuration = configuration;
+            }
 
-        var query = "SELECT COUNT(1) FROM Product WHERE IdProduct = @IdProduct";
-        await using var command = new SqlCommand(query, connection);
-        command.Parameters.AddWithValue("@IdProduct", productId);
-
-        var count = (int)await command.ExecuteScalarAsync();
-        return count > 0;
+            public async Task<bool> ProductExists(int productId)
+            {
+                using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+                await connection.OpenAsync();
+                var command = new SqlCommand("SELECT COUNT(*) FROM Product WHERE IdProduct = @IdProduct", connection);
+                command.Parameters.AddWithValue("@IdProduct", productId);
+                int result = (int)await command.ExecuteScalarAsync();
+                return result > 0;
+            }
+        }
     }
-}
